@@ -10,16 +10,24 @@ import java.util.Locale;
 
 public class MainActivity extends Activity {
 
-    private int sec=0;
+    private int incrementer=0;
     private boolean running;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(savedInstanceState!=null){
+                incrementer = savedInstanceState.getInt("sec");
+            running = savedInstanceState.getBoolean("running");
+        }
         runTimer();
     }
 
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putInt("sec",incrementer);
+        savedInstanceState.putBoolean("running",running);
+    }
 
     protected void onClickStart(View view){
         running=true;
@@ -32,7 +40,7 @@ public class MainActivity extends Activity {
 
     protected void onClickReset(View view){
         running=false;
-        sec=0;
+        incrementer=0;
     }
 
     private void runTimer(){
@@ -42,13 +50,13 @@ public class MainActivity extends Activity {
         handler.post(new Runnable(){
             @Override
             public void run(){
-                int hr = sec/3600;
-                int min = (sec%3600)/60;
-                int secs = sec%60;
+                int hr = incrementer/3600;
+                int min = (incrementer%3600)/60;
+                int secs = incrementer%60;
                 String Time = String.format(Locale.US, "%d:%02d:%02d", hr, min, secs);
                 timeView.setText(Time);
                 if(running){
-                    sec++;
+                    incrementer++;
                 }
                 handler.postDelayed(this,1000);
             }
